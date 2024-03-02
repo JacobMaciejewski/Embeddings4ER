@@ -1,6 +1,6 @@
 import pandas as pd
 
-def topK_neighbors_to_candidate_set(topK_neighbors):
+def topK_neighbors_to_candidate_set(topK_neighbors, distances):
     #We create a data frame corresponding to topK neighbors.
     # We are given a 2D matrix of the form 1: [a1, a2, a3], 2: [b1, b2, b3]
     # where a1, a2, a3 are the top-3 neighbors for tuple 1 and so on.
@@ -10,6 +10,7 @@ def topK_neighbors_to_candidate_set(topK_neighbors):
     melted_df = pd.melt(topK_df, id_vars=["ltable_id"])
     melted_df["rtable_id"] = melted_df["value"]
     candidate_set_df = melted_df[["ltable_id", "rtable_id"]]
+    candidate_set_df['similarity'] = distances.flatten(order='F')
     return candidate_set_df
 
 

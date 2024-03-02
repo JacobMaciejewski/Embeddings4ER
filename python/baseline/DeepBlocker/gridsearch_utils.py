@@ -80,11 +80,11 @@ def purge_id_column(columns : list):
     
     return non_id_columns
 
-def get_deepblocker_candidates(source_dataset : pd.Dataframe,
-                               target_dataset : pd.Dataframe,
+def get_deepblocker_candidates(source_dataset : pd.DataFrame,
+                               target_dataset : pd.DataFrame,
                                nearest_neighbors : int = 5,
                                columns_to_block : list = ["aggregate value"]
-                               ) -> pd.Dataframe:
+                               ) -> pd.DataFrame:
     """Applies DeepBlocker matching and retrieves the nearest neighbors 
        for each entity of the source dataset and their corresponding scores
        in a dataframe
@@ -128,19 +128,21 @@ def update_workflow_statistics(statistics : dict,
     tps_found : int = 0
     total_emissions : int = 0
     recall_axis : list = []  
-    tp_indices : list = []      
-    statistics['total_candidates'] += iteration_normalized(value=min(len(is_true_positive), statistics[budget]),
+    tp_indices : list = []  
+    budget : int = statistics['budget']  
+    recall : float = 0.0  
+    statistics['total_candidates'] += iteration_normalized(value=min(len(is_true_positive), budget),
                                                            iterations=iterations)
 
     for emission, tp_emission in enumerate(is_true_positive):
-        if(emission >= budget or tps_found >= total_tps):
-            total_emissions = emission 
+        if(emission >= budget or tps_found >= total_tps): 
             break
         if(tp_emission):
             recall = (tps_found + 1.0) / total_tps
             tps_found += 1
             tp_indices.append(emission)
         recall_axis.append(recall)
+        total_emissions += 1
      
     statistics['total_emissions'] += iteration_normalized(value=total_emissions,
                                                           iterations=iterations)

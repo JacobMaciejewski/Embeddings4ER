@@ -7,7 +7,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D1/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d2": {
         "budget" : [],
@@ -17,7 +17,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D2/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [3]
     },
     "d3": {
         "budget" : [],
@@ -27,7 +27,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D3/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["#"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d4": {
         "budget" : [],
@@ -37,7 +37,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D4/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["%"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d5": {
         "budget" : [],
@@ -47,7 +47,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D5/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d6": {
         "budget" : [],
@@ -57,7 +57,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D6/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d7": {
         "budget" : [],
@@ -67,7 +67,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D7/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d8": {
         "budget" : [],
@@ -77,7 +77,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D8/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d9": {
         "budget" : [],
@@ -87,7 +87,7 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D9/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": [">"],
-        "iterations": [5]
+        "iterations": [1]
     },
     "d10": {
         "budget" : [],
@@ -97,6 +97,6 @@
         "ground_truth_path": ["~/aggregated_datasets/real/D10/gt.csv"],
         "number_of_nearest_neighbors": [1,5,10],
         "separator": ["|"],
-        "iterations": [5]
+        "iterations": [1]
     }
 }

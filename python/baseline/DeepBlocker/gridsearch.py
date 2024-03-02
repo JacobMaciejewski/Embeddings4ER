@@ -5,7 +5,9 @@ import pandas as pd
 import numpy as np
 import json
 import argparse
+import warnings
 from itertools import product
+from collections import defaultdict
 from gridsearch_utils import (
     to_path,
     values_given,
@@ -15,12 +17,12 @@ from gridsearch_utils import (
     purge_id_column,
     get_deepblocker_candidates,
     update_workflow_statistics,
-    statistics_to_dataframe,
     gt_to_df,
     iteration_normalized
     )
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore")
     parser = argparse.ArgumentParser()
     parser.add_argument('--config',
                         dest='config_name',
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     #-EDIT-START-#
     # parameters native to the Deepblocker Workflow
     # don't edit, unless new parameters were added to the Workflow
-    EXECUTION_PATH = '~/baseline_pyjedai/Embeddings4ER/python/baseline/DeepBlocker/'
+    EXECUTION_PATH = '~/deepblocker/Embeddings4ER/python/baseline/DeepBlocker/'
     VALID_WORKFLOW_PARAMETERS = ["number_of_nearest_neighbors"]
     # path of the configuration file
     CONFIG_FILE_PATH = to_path(EXECUTION_PATH + 'grid_config/' + args.config_name + '.json')
@@ -57,8 +59,11 @@ if __name__ == "__main__":
     D1_ID = 'id'
     D2_ID = 'id'  
     #-EDIT-END-#          
-                                    
+    
+    with open(CONFIG_FILE_PATH) as file:
+        config = json.load(file)                           
     config = config[args.dataset]
+    
     if(not necessary_dfs_supplied(config)):
         raise ValueError("Different number of source, target dataset and ground truth paths!")
 
@@ -66,12 +71,9 @@ if __name__ == "__main__":
     iterations = config['iterations'][0] if(values_given(config, 'iterations')) else 1
     execution_count : int = 0
     
-    workflows_dataframe_columns = ['budget','dataset','total_candidates','total_emissions','time','name','auc','recall','tp_indices']
-    workflows_dataframe_columns = VALID_WORKFLOW_PARAMETERS + VALID_WORKFLOW_PARAMETERS
+    workflows_dataframe_columns = ['budget','dataset','total_candidates','total_emissions','time','auc','recall','tp_indices']
+    workflows_dataframe_columns = VALID_WORKFLOW_PARAMETERS + workflows_dataframe_columns
     workflows_dataframe = pd.DataFrame(columns=workflows_dataframe_columns)
-    
-    if(STORE_RESULTS):
-        clear_json_file(path=JSON_STORE_PATH)
 
     for id, dataset_info in enumerate(datasets_info):
         dataset_id = id + 1
@@ -89,7 +91,7 @@ if __name__ == "__main__":
         workflow_config : dict = {k: v for k, v in config.items() if(values_given(config, k) and k in VALID_WORKFLOW_PARAMETERS)}
         workflow_config['budget'] = config['budget'] if values_given(config, 'budget') else get_multiples(true_positives_number, 10)
         parameter_names : list = workflow_config.keys() 
-        argument_combinations : list = product(*(workflow_config.values()))    
+        argument_combinations : list = list(product(*(workflow_config.values())))   
         total_workflows : int = len(argument_combinations) * len(datasets_info) * iterations
     
         for argument_combination in argument_combinations:
@@ -104,17 +106,36 @@ if __name__ == "__main__":
                 execution_count += 1
                 print(f"#### WORKFLOW {execution_count}/{total_workflows} ####")
                 start_time = time.time()
-                
-                candidates : pd.Dataframe = get_deepblocker_candidates(source_dataset=d1,
+                candidates : pd.DataFrame = get_deepblocker_candidates(source_dataset=d1,
                                                                        target_dataset=d2,
                                                                        nearest_neighbors=workflow_arguments['number_of_nearest_neighbors'])
                 update_workflow_statistics(statistics=workflow_statistics,
                                            candidates=candidates,
+                                           ground_truth=gt,
                                            iterations=iterations,
                                            duplicate_of=duplicate_of)                        
                 workflow_statistics['time'] += ((time.time() - start_time) / iterations)
 
-            dataframe.append(workflow_statistics, ignore_index=True)    
+
+            # print(workflows_dataframe)
+            # workflow_statistics['tp_indices'] = ','.join(workflow_statistics['tp_indices'])
+            for column, value in workflow_statistics.items():
+                workflow_statistics[column] = [value]            
+
+            # print(workflow_statistics)
+            # print(pd.DataFrame(workflow_statistics))
+            workflow_statistics = pd.DataFrame(workflow_statistics)
+            workflow_statistics.reset_index(inplace=True, drop=True)
+            # workflows_dataframe = pd.concat([workflows_dataframe, workflow_statistics], ignore_index=True)   
+            # workflow_statistics = pd.DataFrame.from_dict(workflow_statistics)
+            # print(workflow_statistics)
+            # workflows_dataframe = workflows_dataframe.append(workflow_statistics, ignore_index=True)
+            print(workflows_dataframe)
+            workflows_dataframe = pd.concat([workflows_dataframe, pd.DataFrame(workflow_statistics)], axis=0, ignore_index=True)
+            print(workflows_dataframe)
+            
+            # workflow_statistics = dict(workflow_statistics)
+            # workflows_dataframe.append(pd.DataFrame.from_dict(workflow_statistics), ignore_index=True)    
     if(STORE_RESULTS):
         workflows_dataframe.to_csv(RESULTS_STORE_PATH, index=False)
     

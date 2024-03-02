@@ -2,8 +2,8 @@
 
 
 logs/schema_agnostic/extended/complementarity.txt
-baseline/DeepBlocker/grid_config/*
-baseline/DeepBlocker/results/*
+python/baseline/DeepBlocker/grid_config/*
+python/baseline/DeepBlocker/results/*
 python/baseline/ZeroER/datasets/*
 python/baseline/Sparkly/pylucene-9.7.0/*
 

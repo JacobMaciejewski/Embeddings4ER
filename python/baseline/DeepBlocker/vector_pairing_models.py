@@ -44,9 +44,11 @@ class ExactTopKVectorPairing(ABCVectorPairing):
         all_pair_cosine_similarity_matrix = 1 - distance.cdist(embedding_matrix_for_querying, self.embedding_matrix_for_indexing, metric="cosine")
         #-all_pair_cosine_similarity_matrix is needed to get the max.. use all_pair_cosine_similarity_matrix for min
         topK_indices_each_row = np.argsort(-all_pair_cosine_similarity_matrix)[:, :K]
-        #you can get the corresponding simlarities via all_pair_cosine_similarity_matrix[index, topK_indices_each_row[index]]
-    
-        return topK_indices_each_row
+
+        topK_indices = np.array(topK_indices_each_row)
+        topK_distances = all_pair_cosine_similarity_matrix[np.arange(len(topK_indices))[:, np.newaxis], topK_indices]
+
+        return topK_indices_each_row, topK_distances
     
 
 
