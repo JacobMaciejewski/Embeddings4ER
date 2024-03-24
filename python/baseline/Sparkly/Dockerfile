@@ -13,7 +13,7 @@ ENV PATH=$JCC_JDK/bin:$PATH
 # Download PyLucene
 # Install PyLucene
 # Commenting out the lines that download and extract PyLucene
-#ARG PYLUCENE_VERSION=9.7.0
+# ARG PYLUCENE_VERSION=9.7.0
 # RUN wget -q https://dlcdn.apache.org/lucene/pylucene/pylucene-${PYLUCENE_VERSION}-src.tar.gz
 # RUN tar -xzvf pylucene-${PYLUCENE_VERSION}-src.tar.gz
 # RUN mv pylucene-${PYLUCENE_VERSION} /usr/src/pylucene-src
@@ -22,8 +22,8 @@ COPY pylucene-9.7.0 /usr/src/pylucene-src
 
 # Install jcc
 WORKDIR /usr/src/pylucene-src/jcc
-RUN python setup.py build
-RUN python setup.py install
+RUN python3 setup.py build
+RUN python3 setup.py install
 
 # Install icupkg, which is needed by PyLucene make
 RUN apt-get install libicu-dev
@@ -41,10 +41,13 @@ RUN git clone https://github.com/anhaidgroup/sparkly.git
 WORKDIR /usr/src/sparkly
 RUN python3 -m pip install -r ./requirements.txt
 
-# Create a directory 'app' in the container
-#WORKDIR /app
-# Copy the Python script into the container
-COPY run_sparkly.py /usr/src/sparkly
+# Copy the shell setup and python script to the container
+# COPY gridsearch.py /usr/src/sparkly
+# COPY gridsearch.sh /usr/src/sparkly
+# COPY extra_requirements.txt /usr/src/sparkly
 
-#CMD ["python3", "./examples/basic_example.py"]
-CMD ["python", "run_sparkly.py"]
+# # Mark the shell script as executable
+# RUN chmod +x entrypoint.sh
+
+# # Set the shell script as the entrypoint
+# ENTRYPOINT ["./entrypoint.sh"]

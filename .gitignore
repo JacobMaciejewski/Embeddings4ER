@@ -6,6 +6,9 @@ python/baseline/DeepBlocker/grid_config/*
 python/baseline/DeepBlocker/results/*
 python/baseline/ZeroER/datasets/*
 python/baseline/Sparkly/pylucene-9.7.0/*
+python/baseline/Sparkly/results/*
+python/baseline/Sparkly/grid_config/*
+python/baseline/Sparkly/outs/*
 
 legacy/*
 plots/*
